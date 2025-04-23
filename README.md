@@ -79,7 +79,7 @@ instances = [
 
 | Name | Description | Type | Default | Required | 
 |------|-------------|:----:|---------|:--------:|
-|**project_id**| The ID of the project for which the IAM resource is to be configured | string | { } | yes| 
+|**project_id**| The ID of the project for which the Compute resource is to be configured | string | { } | yes| 
 |**instances**| List of instance configurations | list(object) | [ ] | yes | 
 
 ## Output
