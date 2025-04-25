@@ -9,6 +9,7 @@ This Terraform resource creates one or more Google Compute Engine VM instances u
 
 ## Architecture
 
+<img width="600" length="800" alt="Terraform" src="https://github.com/user-attachments/assets/e3708463-f7f7-4966-863d-12d50f836ab3">
 
 
 ## Providers
