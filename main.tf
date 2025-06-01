@@ -10,6 +10,7 @@ resource "google_compute_instance" "gcp-server" {
     initialize_params {
       image = var.instances[count.index].boot_image
       size  = var.instances[count.index].boot_disk_size
+      type  = var.instances[count.index].boot_disk_type
     }
   }
 
