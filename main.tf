@@ -18,10 +18,14 @@ resource "google_compute_instance" "gcp-server" {
     network    = var.instances[count.index].network
     subnetwork = var.instances[count.index].subnetwork
 
-    access_config {
-      nat_ip = var.instances[count.index].static_ip
+    dynamic "access_config" {
+      for_each = var.instances[count.index].enable_public_ip ? [1] : []
+      content {
+        nat_ip = var.instances[count.index].static_ip
+      }
     }
   }
+
 
   dynamic "attached_disk" {
     for_each = var.instances[count.index].additional_disks
