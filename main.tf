@@ -15,8 +15,8 @@ resource "google_compute_instance" "gcp-server" {
   }
 
   network_interface {
-    network    = var.instances[count.index].network
-    subnetwork = var.instances[count.index].subnetwork
+    network    = length(trim(var.instances[count.index].network, " ")) > 0 ? var.instances[count.index].network : var.default_network
+    subnetwork = length(trim(var.instances[count.index].subnetwork, " ")) > 0 ? var.instances[count.index].subnetwork : var.default_subnetwork
 
     dynamic "access_config" {
       for_each = var.instances[count.index].enable_public_ip ? [1] : []
@@ -25,7 +25,6 @@ resource "google_compute_instance" "gcp-server" {
       }
     }
   }
-
 
   dynamic "attached_disk" {
     for_each = var.instances[count.index].additional_disks
