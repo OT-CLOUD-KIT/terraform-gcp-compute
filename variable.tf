@@ -3,6 +3,18 @@ variable "project_id" {
   description = "GCP Project ID"
 }
 
+variable "default_network" {
+  type        = string
+  description = "Global network to use if not provided in instance"
+  default     = null
+}
+
+variable "default_subnetwork" {
+  type        = string
+  default     = null
+  description = "Global subnetwork to use if not provided in instance"
+}
+
 variable "instances" {
   type = list(object({
     name                   = string
