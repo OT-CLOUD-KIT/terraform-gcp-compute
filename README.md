@@ -5,7 +5,35 @@
   [opstree_homepage]: https://opstree.github.io/
   [opstree_avatar]: https://img.cloudposse.com/150x150/https://github.com/opstree.png
 
-This Terraform resource creates one or more Google Compute Engine VM instances using a list defined in var.instances. Each instance can have customized properties like boot disk, additional attached disks, network settings, service account, metadata, labels, and deletion protection. 
+This Terraform resource creates one or more Google Compute Engine (GCE) VM instances using the list provided in `var.instances`.
+
+Each instance supports custom configuration, including:
+- Boot disk (size, type, image)
+- Additional attached disks
+- Network and subnetwork configuration
+- Static or dynamic public IP allocation
+- Service account with defined scopes
+- Metadata, labels, and deletion protection
+
+### Network/Subnetwork Logic:
+The `network_interface` block uses conditional logic to support both per-instance and shared networking configurations:
+
+- If the instance object contains non-empty `network` and `subnetwork` values, those are used.
+- Otherwise, it falls back to `var.default_network` and `var.default_subnetwork`.
+
+This allows:
+- Flexible use of **custom network/subnetwork per instance**, or
+- A **common shared network** for all instances using `default_*` values.
+
+### Data Block Integration:
+If the network or subnetwork is managed by a separate module or already exists (outside this module), you can use Terraform `data` blocks to fetch their self-links like this:
+
+```hcl
+default_network = data.google_compute_network.default.self_link
+default_network = data.google_compute_subnetwork.default.self_link
+
+```
+
 
 ## Architecture
 
@@ -22,9 +50,11 @@ This Terraform resource creates one or more Google Compute Engine VM instances u
 
 ```hcl
 module "compute_instance" {
-  source     = "./module"
-  project_id = var.project_id
-  instances  = var.instances
+  source             = "./module"
+  project_id         = var.project_id
+  instances          = var.instances
+  default_network    = var.default_network
+  default_subnetwork = var.default_subnetwork
 }
 
 # Variable values
@@ -86,9 +116,12 @@ instances = [
 |------|-------------|:----:|---------|:--------:|
 |**project_id**| The ID of the project for which the Compute resource is to be configured | string | { } | yes| 
 |**instances**| List of instance configurations | list(object) | [ ] | yes | 
+|**default_network**| Global network to use if not provided in instance | string | { } | yes| 
+|**default_subnetwork**| Global subnetwork to use if not provided in instance | list(object) | { } | yes | 
 
 ## Output
 | Name | Description |
 |------|-------------|
 |**instance_self_links**| List of self-links for the created Compute Engine instances | 
+|**public_ips**| Public IP addresses of the GCP VM instances | 
                                                                                                                   
